@@ -1,0 +1,53 @@
+package com.gym.controller;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.gym.util.DBConnection;
+
+public class RegistrationServlet extends  HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response )throws ServletException, IOException{
+		
+			String fullName = request.getParameter("fullName");
+	        String email = request.getParameter("email");
+	        String password = request.getParameter("password");
+	        String phoneNumber = request.getParameter("phoneNumber");
+	        String gender = request.getParameter("gender");
+	        String bloodGroup = request.getParameter("bloodGroup");
+	        String aadharNumber = request.getParameter("aadharNumber");
+	        
+	        try(Connection connection = DBConnection.getConnection()){
+	        	String sql = "INSERT INTO users (full_name, email, password, phone_number, gender, blood_group, aadhar_number) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+	            preparedStatement.setString(1, fullName);
+	            preparedStatement.setString(2, email);
+	            preparedStatement.setString(3, password);
+	            preparedStatement.setString(4, phoneNumber);
+	            preparedStatement.setString(5, gender);
+	            preparedStatement.setString(6, bloodGroup);
+	            preparedStatement.setString(7, aadharNumber);
+	            
+	            int rows = preparedStatement.executeUpdate();
+	            
+	            if(rows > 0) {
+	            	response.sendRedirect("success.jsp");
+	            } else {
+	            	response.sendRedirect("error.jsp");
+	            } 
+	            }
+	            
+	        } catch (Exception e) {
+            	e.printStackTrace();
+            	response.sendRedirect("error.jsp");
+
+	}
+}
